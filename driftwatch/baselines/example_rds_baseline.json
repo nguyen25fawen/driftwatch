@@ -1,0 +1,34 @@
+[
+  {
+    "resource_id": "prod-mysql-01",
+    "resource_type": "rds_instance",
+    "region": "us-east-1",
+    "expected_config": {
+      "db_instance_class": "db.t3.medium",
+      "engine": "mysql",
+      "engine_version": "8.0.32",
+      "multi_az": true,
+      "publicly_accessible": false,
+      "storage_encrypted": true,
+      "deletion_protection": true,
+      "backup_retention_period": 7,
+      "db_subnet_group": "prod-db-subnet-group"
+    }
+  },
+  {
+    "resource_id": "staging-postgres-01",
+    "resource_type": "rds_instance",
+    "region": "us-west-2",
+    "expected_config": {
+      "db_instance_class": "db.t3.small",
+      "engine": "postgres",
+      "engine_version": "15.2",
+      "multi_az": false,
+      "publicly_accessible": false,
+      "storage_encrypted": true,
+      "deletion_protection": false,
+      "backup_retention_period": 3,
+      "db_subnet_group": "staging-db-subnet-group"
+    }
+  }
+]
