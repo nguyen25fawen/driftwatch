@@ -1,31 +1,30 @@
 [
   {
-    "resource_id": "sg-0abc123456",
-    "resource_type": "aws_security_group",
-    "region": "us-east-1",
+    "resource_id": "my-prod-bucket",
+    "resource_type": "s3",
     "expected_config": {
-      "ingress_open_to_world": false,
-      "description": "web-tier-sg"
+      "versioning": "Enabled",
+      "logging": "Enabled",
+      "public_access_block": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      }
     }
   },
   {
-    "resource_id": "bucket-prod-assets",
-    "resource_type": "aws_s3_bucket",
-    "region": "us-east-1",
+    "resource_id": "my-backup-bucket",
+    "resource_type": "s3",
     "expected_config": {
-      "versioning_enabled": true,
-      "public_access_blocked": true,
-      "logging_enabled": true
-    }
-  },
-  {
-    "resource_id": "rds-prod-db",
-    "resource_type": "aws_rds_instance",
-    "region": "us-west-2",
-    "expected_config": {
-      "multi_az": true,
-      "storage_encrypted": true,
-      "publicly_accessible": false
+      "versioning": "Enabled",
+      "logging": "Disabled",
+      "public_access_block": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      }
     }
   }
 ]
