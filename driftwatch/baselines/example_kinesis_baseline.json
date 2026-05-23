@@ -1,0 +1,15 @@
+[
+  {
+    "resource_id": "my-event-stream",
+    "resource_type": "kinesis_stream",
+    "expected_config": {
+      "stream_name": "my-event-stream",
+      "stream_status": "ACTIVE",
+      "shard_count": 2,
+      "retention_period_hours": 24,
+      "encryption_type": "KMS",
+      "key_id": "alias/aws/kinesis",
+      "enhanced_monitoring": []
+    }
+  }
+]
