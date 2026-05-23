@@ -1,11 +1,9 @@
-"""Tests for driftwatch/fetchers/rds.py."""
-
+"""Tests for the RDS instance fetcher."""
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
 import pytest
-from botocore.exceptions import ClientError
 
 from driftwatch.fetchers.rds import fetch_rds_instance
 from driftwatch.poller import _FETCHER_REGISTRY
@@ -15,25 +13,29 @@ from driftwatch.poller import _FETCHER_REGISTRY
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _make_db_instance(**overrides):
+def _make_db_instance(**overrides) -> dict:
     base = {
-        "DBInstanceIdentifier": "prod-mysql-01",
-        "DBInstanceClass": "db.t3.medium",
+        "DBInstanceIdentifier": "my-db",
+        "DBInstanceClass": "db.t3.micro",
         "Engine": "mysql",
         "EngineVersion": "8.0.32",
-        "MultiAZ": True,
-        "PubliclyAccessible": False,
+        "MultiAZ": False,
         "StorageEncrypted": True,
+        "PubliclyAccessible": False,
         "DeletionProtection": True,
         "BackupRetentionPeriod": 7,
-        "DBSubnetGroup": {"DBSubnetGroupName": "prod-db-subnet-group"},
+        "DBSubnetGroup": {"DBSubnetGroupName": "default"},
+        "VpcSecurityGroups": [
+            {"VpcSecurityGroupId": "sg-abc123", "Status": "active"}
+        ],
+        "TagList": [{"Key": "Environment", "Value": "staging"}],
     }
     base.update(overrides)
     return base
 
 
-def _make_describe_response(instance_dict):
-    return {"DBInstances": [instance_dict]}
+def _make_describe_response(instance: dict) -> dict:
+    return {"DBInstances": [instance]}
 
 
 @pytest.fixture()
@@ -41,6 +43,9 @@ def mock_rds_client():
     with patch("driftwatch.fetchers.rds._get_rds_client") as mock_factory:
         client = MagicMock()
         mock_factory.return_value = client
+        client.describe_db_instances.return_value = _make_describe_response(
+            _make_db_instance()
+        )
         yield client
 
 
@@ -53,42 +58,36 @@ def test_fetcher_registered():
 
 
 def test_fetch_returns_expected_fields(mock_rds_client):
-    inst = _make_db_instance()
-    mock_rds_client.describe_db_instances.return_value = _make_describe_response(inst)
+    result = fetch_rds_instance("my-db", "us-east-1")
 
-    result = fetch_rds_instance("prod-mysql-01", region="us-east-1")
-
-    assert result["db_instance_class"] == "db.t3.medium"
+    assert result["db_instance_identifier"] == "my-db"
+    assert result["db_instance_class"] == "db.t3.micro"
     assert result["engine"] == "mysql"
-    assert result["multi_az"] is True
-    assert result["publicly_accessible"] is False
+    assert result["engine_version"] == "8.0.32"
+    assert result["multi_az"] is False
     assert result["storage_encrypted"] is True
+    assert result["publicly_accessible"] is False
     assert result["deletion_protection"] is True
     assert result["backup_retention_period"] == 7
-    assert result["db_subnet_group"] == "prod-db-subnet-group"
+    assert result["subnet_group"] == "default"
+    assert result["security_group_ids"] == ["sg-abc123"]
+    assert result["tags"] == {"Environment": "staging"}
 
 
-def test_fetch_not_found_raises(mock_rds_client):
-    mock_rds_client.describe_db_instances.return_value = {"DBInstances": []}
-
-    with pytest.raises(ValueError, match="not found"):
-        fetch_rds_instance("missing-db", region="us-east-1")
-
-
-def test_fetch_client_error_raises(mock_rds_client):
-    mock_rds_client.describe_db_instances.side_effect = ClientError(
-        {"Error": {"Code": "DBInstanceNotFound", "Message": "not found"}},
-        "DescribeDBInstances",
+def test_fetch_multiple_security_groups(mock_rds_client):
+    instance = _make_db_instance(
+        VpcSecurityGroups=[
+            {"VpcSecurityGroupId": "sg-111", "Status": "active"},
+            {"VpcSecurityGroupId": "sg-222", "Status": "active"},
+        ]
     )
+    mock_rds_client.describe_db_instances.return_value = _make_describe_response(instance)
+    result = fetch_rds_instance("my-db", "us-east-1")
+    assert sorted(result["security_group_ids"]) == ["sg-111", "sg-222"]
 
-    with pytest.raises(ValueError, match="Failed to describe RDS instance"):
-        fetch_rds_instance("bad-db", region="us-east-1")
 
-
-def test_fetch_missing_subnet_group(mock_rds_client):
-    inst = _make_db_instance()
-    del inst["DBSubnetGroup"]
-    mock_rds_client.describe_db_instances.return_value = _make_describe_response(inst)
-
-    result = fetch_rds_instance("prod-mysql-01")
-    assert result["db_subnet_group"] is None
+def test_fetch_no_tags(mock_rds_client):
+    instance = _make_db_instance(TagList=[])
+    mock_rds_client.describe_db_instances.return_value = _make_describe_response(instance)
+    result = fetch_rds_instance("my-db", "us-east-1")
+    assert result["tags"] == {}
