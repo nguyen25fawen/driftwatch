@@ -63,6 +63,18 @@ driftwatch run --baseline baseline.yaml --alert slack
 | `--baseline` | Path to baseline YAML file | `baseline.yaml` |
 | `--interval` | Poll interval in seconds | `300` |
 | `--alert` | Alert destination (`stdout`, `slack`, `pagerduty`) | `stdout` |
+| `--once` | Run a single poll and exit instead of looping | `false` |
+
+---
+
+## Environment Variables
+
+Sensitive configuration such as webhook URLs and API keys should be provided via environment variables rather than command-line flags:
+
+| Variable | Description |
+|----------|-------------|
+| `SLACK_WEBHOOK_URL` | Incoming webhook URL for Slack alerts |
+| `PAGERDUTY_ROUTING_KEY` | Routing key for PagerDuty Events API v2 |
 
 ---
 
