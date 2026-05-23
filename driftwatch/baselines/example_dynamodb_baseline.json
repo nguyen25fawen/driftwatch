@@ -1,0 +1,22 @@
+[
+  {
+    "resource_id": "my-app-table",
+    "resource_type": "dynamodb_table",
+    "region": "us-east-1",
+    "expected_config": {
+      "table_name": "my-app-table",
+      "table_status": "ACTIVE",
+      "billing_mode": "PAY_PER_REQUEST",
+      "read_capacity_units": 0,
+      "write_capacity_units": 0,
+      "sse_status": "ENABLED",
+      "streams_enabled": true,
+      "stream_view_type": "NEW_AND_OLD_IMAGES",
+      "key_schema": [
+        {"AttributeName": "pk", "KeyType": "HASH"},
+        {"AttributeName": "sk", "KeyType": "RANGE"}
+      ],
+      "item_count": 0
+    }
+  }
+]
