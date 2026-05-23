@@ -45,7 +45,14 @@ def load_baselines(path: str) -> list[ResourceBaseline]:
         raise ValueError("Baseline file must contain a JSON array of resource definitions")
 
     baselines: list[ResourceBaseline] = []
-    for entry in raw:
+    for index, entry in enumerate(raw):
+        if not isinstance(entry, dict):
+            raise ValueError(f"Entry at index {index} must be a JSON object")
+        missing = [key for key in ("resource_id", "resource_type") if key not in entry]
+        if missing:
+            raise ValueError(
+                f"Entry at index {index} is missing required field(s): {', '.join(missing)}"
+            )
         baselines.append(
             ResourceBaseline(
                 resource_id=entry["resource_id"],
