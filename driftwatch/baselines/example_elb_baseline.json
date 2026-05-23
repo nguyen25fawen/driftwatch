@@ -1,0 +1,21 @@
+[
+  {
+    "resource_id": "my-application-lb",
+    "resource_type": "elb",
+    "region": "us-east-1",
+    "expected_config": {
+      "name": "my-application-lb",
+      "type": "application",
+      "scheme": "internet-facing",
+      "ip_address_type": "ipv4",
+      "deletion_protection_enabled": "true",
+      "access_logs_enabled": "true",
+      "idle_timeout_seconds": "60",
+      "availability_zones": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c"
+      ]
+    }
+  }
+]
