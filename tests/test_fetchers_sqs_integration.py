@@ -67,3 +67,17 @@ def test_drift_detected_on_visibility_change(mock_sqs_client):
     drift = detect_drift(result, baselines[0])
     assert drift.has_drift is True
     assert "visibility_timeout" in drift.drifted_keys
+
+
+def test_drift_detected_on_multiple_changes(mock_sqs_client):
+    """Changing multiple attributes should report all drifted keys."""
+    attrs = _matching_attrs()
+    attrs["VisibilityTimeout"] = "60"  # differs from baseline value of 30
+    attrs["DelaySeconds"] = "10"  # differs from baseline value of 0
+    mock_sqs_client.get_queue_attributes.return_value = {"Attributes": attrs}
+    baselines = load_baselines(str(BASELINE_PATH))
+    result = fetch_sqs_queue(QUEUE_URL)
+    drift = detect_drift(result, baselines[0])
+    assert drift.has_drift is True
+    assert "visibility_timeout" in drift.drifted_keys
+    assert "delay_seconds" in drift.drifted_keys
