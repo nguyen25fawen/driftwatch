@@ -1,4 +1,4 @@
-"""Auto-import all fetcher modules so their @register_fetcher decorators run."""
+"""Auto-import all fetchers so their @register_fetcher decorators run."""
 from driftwatch.fetchers import (
     s3,
     ec2,
@@ -17,6 +17,14 @@ from driftwatch.fetchers import (
     cloudtrail,
     elasticache,
     route53,
+    ecr,
+    waf,
+    apigateway,
+    cloudfront,
+    eks,
+    opensearch,
+    vpc,
+    glue,
 )
 
 __all__ = [
@@ -37,4 +45,12 @@ __all__ = [
     "cloudtrail",
     "elasticache",
     "route53",
+    "ecr",
+    "waf",
+    "apigateway",
+    "cloudfront",
+    "eks",
+    "opensearch",
+    "vpc",
+    "glue",
 ]

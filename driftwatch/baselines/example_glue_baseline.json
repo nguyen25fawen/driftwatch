@@ -1,0 +1,25 @@
+{
+  "resource_id": "my-etl-job",
+  "resource_type": "glue_job",
+  "region": "us-east-1",
+  "expected_config": {
+    "name": "my-etl-job",
+    "role": "arn:aws:iam::123456789012:role/GlueServiceRole",
+    "glue_version": "4.0",
+    "worker_type": "G.1X",
+    "number_of_workers": 5,
+    "max_retries": 1,
+    "timeout": 2880,
+    "script_location": "s3://my-bucket/scripts/etl.py",
+    "python_version": "3",
+    "connections": ["my-jdbc-connection"],
+    "default_arguments": {
+      "--job-language": "python",
+      "--enable-metrics": ""
+    },
+    "tags": {
+      "Environment": "production",
+      "Team": "data-engineering"
+    }
+  }
+}
