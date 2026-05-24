@@ -1,0 +1,15 @@
+[
+  {
+    "resource_id": "my-app-repo",
+    "resource_type": "codecommit_repository",
+    "region": "us-east-1",
+    "expected_config": {
+      "repository_name": "my-app-repo",
+      "default_branch": "main",
+      "repository_description": "Main application repository",
+      "approval_rule_templates": [
+        "require-two-approvers"
+      ]
+    }
+  }
+]
