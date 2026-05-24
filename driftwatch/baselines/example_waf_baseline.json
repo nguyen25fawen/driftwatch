@@ -1,0 +1,27 @@
+[
+  {
+    "resource_id": "MyWebACL/aabbccdd-1234-5678-abcd-ef0123456789",
+    "resource_type": "waf_web_acl",
+    "region": "us-east-1",
+    "expected_config": {
+      "name": "MyWebACL",
+      "id": "aabbccdd-1234-5678-abcd-ef0123456789",
+      "default_action": "allow",
+      "managed_by_firewall_manager": false,
+      "rule_count": 2,
+      "rules": [
+        {
+          "name": "AWSManagedRulesCommonRuleSet",
+          "priority": 1,
+          "action": "managed"
+        },
+        {
+          "name": "BlockBadBots",
+          "priority": 2,
+          "action": "block"
+        }
+      ],
+      "capacity": 150
+    }
+  }
+]
