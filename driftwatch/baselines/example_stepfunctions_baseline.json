@@ -1,0 +1,15 @@
+[
+  {
+    "resource_id": "arn:aws:states:us-east-1:123456789012:stateMachine:MyStateMachine",
+    "resource_type": "stepfunctions",
+    "region": "us-east-1",
+    "expected_config": {
+      "name": "MyStateMachine",
+      "type": "STANDARD",
+      "status": "ACTIVE",
+      "role_arn": "arn:aws:iam::123456789012:role/StepFunctionsRole",
+      "logging_level": "ERROR",
+      "tracing_enabled": true
+    }
+  }
+]
