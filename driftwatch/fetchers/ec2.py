@@ -18,6 +18,30 @@ def _get_ec2_client(region: str):
     return boto3.client("ec2", region_name=region)
 
 
+def _extract_instance_config(instance: dict[str, Any]) -> dict[str, Any]:
+    """Extract a flat config dict from a raw EC2 instance description."""
+    return {
+        "instance_type": instance.get("InstanceType"),
+        "state": instance.get("State", {}).get("Name"),
+        "image_id": instance.get("ImageId"),
+        "key_name": instance.get("KeyName"),
+        "monitoring_enabled": instance.get("Monitoring", {}).get("State") == "enabled",
+        "ebs_optimized": instance.get("EbsOptimized", False),
+        "vpc_id": instance.get("VpcId"),
+        "subnet_id": instance.get("SubnetId"),
+        "security_group_ids": sorted(
+            sg["GroupId"] for sg in instance.get("SecurityGroups", [])
+        ),
+        "iam_instance_profile": (
+            instance.get("IamInstanceProfile", {}).get("Arn")
+        ),
+        "tags": {
+            tag["Key"]: tag["Value"]
+            for tag in instance.get("Tags", [])
+        },
+    }
+
+
 @register_fetcher("ec2_instance")
 def fetch_ec2_instance(resource_id: str, region: str = "us-east-1") -> dict[str, Any]:
     """Fetch the configuration of a single EC2 instance by instance ID.
@@ -45,27 +69,7 @@ def fetch_ec2_instance(resource_id: str, region: str = "us-east-1") -> dict[str,
         raise ValueError(f"EC2 instance not found: {resource_id}")
 
     instance = reservations[0]["Instances"][0]
-
-    config: dict[str, Any] = {
-        "instance_type": instance.get("InstanceType"),
-        "state": instance.get("State", {}).get("Name"),
-        "image_id": instance.get("ImageId"),
-        "key_name": instance.get("KeyName"),
-        "monitoring_enabled": instance.get("Monitoring", {}).get("State") == "enabled",
-        "ebs_optimized": instance.get("EbsOptimized", False),
-        "vpc_id": instance.get("VpcId"),
-        "subnet_id": instance.get("SubnetId"),
-        "security_group_ids": sorted(
-            sg["GroupId"] for sg in instance.get("SecurityGroups", [])
-        ),
-        "iam_instance_profile": (
-            instance.get("IamInstanceProfile", {}).get("Arn")
-        ),
-        "tags": {
-            tag["Key"]: tag["Value"]
-            for tag in instance.get("Tags", [])
-        },
-    }
+    config = _extract_instance_config(instance)
 
     logger.debug("Fetched EC2 instance config for %s: %s", resource_id, config)
     return config
