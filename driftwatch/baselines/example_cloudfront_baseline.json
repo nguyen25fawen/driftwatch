@@ -1,0 +1,24 @@
+{
+  "resource_id": "E1ABCDEF123456",
+  "resource_type": "cloudfront_distribution",
+  "region": "us-east-1",
+  "expected_config": {
+    "enabled": true,
+    "comment": "Production CDN distribution",
+    "price_class": "PriceClass_100",
+    "http_version": "http2",
+    "ipv6_enabled": true,
+    "default_root_object": "index.html",
+    "viewer_protocol_policy": "redirect-to-https",
+    "compress": true,
+    "origins": [
+      {
+        "domain_name": "my-bucket.s3.amazonaws.com",
+        "origin_id": "S3-my-bucket",
+        "protocol_policy": "s3"
+      }
+    ],
+    "aliases": ["cdn.example.com"],
+    "web_acl_id": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/my-acl/abc123"
+  }
+}
