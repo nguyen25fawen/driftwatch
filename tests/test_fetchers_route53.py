@@ -78,3 +78,12 @@ def test_private_zone_flag_captured(mock_r53_client):
     mock_r53_client.get_hosted_zone.return_value = _make_zone(private=True)
     result = fetch_route53_hosted_zone(ZONE_ID, "us-east-1")
     assert result.config["private_zone"] is True
+
+
+def test_missing_comment_defaults_to_empty_string(mock_r53_client):
+    """Zones created without a comment omit the 'Comment' key; verify graceful handling."""
+    resp = _make_zone()
+    del resp["HostedZone"]["Config"]["Comment"]
+    mock_r53_client.get_hosted_zone.return_value = resp
+    result = fetch_route53_hosted_zone(ZONE_ID, "us-east-1")
+    assert result.config["comment"] == ""
