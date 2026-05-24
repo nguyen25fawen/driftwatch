@@ -1,0 +1,14 @@
+{
+  "resource_id": "my-production-cluster",
+  "resource_type": "eks_cluster",
+  "expected_config": {
+    "name": "my-production-cluster",
+    "version": "1.29",
+    "role_arn": "arn:aws:iam::123456789012:role/eks-cluster-role",
+    "endpoint_public_access": false,
+    "endpoint_private_access": true,
+    "logging_types": ["api", "audit", "authenticator"],
+    "encryption_enabled": true,
+    "status": "ACTIVE"
+  }
+}
