@@ -91,3 +91,15 @@ def test_client_error_propagates(mock_sns_client):
 
     with pytest.raises(ClientError):
         fetch_sns_topic(TOPIC_ARN)
+
+
+def test_region_passed_to_client_factory(mock_sns_client):
+    """Verify that the region argument is forwarded to the client factory."""
+    with patch("driftwatch.fetchers.sns._get_sns_client") as mock_factory:
+        client = MagicMock()
+        mock_factory.return_value = client
+        client.get_topic_attributes.return_value = _make_attrs()
+
+        fetch_sns_topic(TOPIC_ARN, region="eu-west-1")
+
+        mock_factory.assert_called_once_with(region="eu-west-1")
