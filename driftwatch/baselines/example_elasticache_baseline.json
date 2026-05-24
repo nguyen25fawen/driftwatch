@@ -1,0 +1,23 @@
+[
+  {
+    "resource_id": "my-redis-cluster",
+    "resource_type": "elasticache_replication_group",
+    "region": "us-east-1",
+    "expected_config": {
+      "description": "Primary Redis cluster for session data",
+      "status": "available",
+      "multi_az": "enabled",
+      "automatic_failover": "enabled",
+      "at_rest_encryption": true,
+      "transit_encryption": true,
+      "num_node_groups": 1,
+      "num_replicas_per_node_group": 2,
+      "snapshotting_cluster_id": "",
+      "snapshot_retention_limit": 7,
+      "snapshot_window": "03:00-04:00",
+      "cache_node_type": "cache.r6g.large",
+      "auth_token_enabled": true,
+      "cluster_mode": "disabled"
+    }
+  }
+]
