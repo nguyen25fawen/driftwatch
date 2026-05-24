@@ -1,0 +1,13 @@
+{
+  "resource_id": "my-deploy-pipeline",
+  "resource_type": "codepipeline",
+  "expected_config": {
+    "pipeline_name": "my-deploy-pipeline",
+    "role_arn": "arn:aws:iam::123456789012:role/CodePipelineServiceRole",
+    "artifact_store_type": "S3",
+    "artifact_store_location": "my-codepipeline-artifacts-bucket",
+    "stage_count": 3,
+    "stage_names": ["Build", "Deploy", "Source"],
+    "version": 1
+  }
+}
