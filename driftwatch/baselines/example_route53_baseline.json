@@ -1,0 +1,14 @@
+[
+  {
+    "resource_id": "Z1D633PJN98FT9",
+    "resource_type": "route53_hosted_zone",
+    "region": "us-east-1",
+    "expected_config": {
+      "name": "example.com.",
+      "private_zone": false,
+      "comment": "Managed by DriftWatch",
+      "record_count": 5,
+      "vpcs": []
+    }
+  }
+]

@@ -14,6 +14,9 @@ from driftwatch.fetchers import (
     secretsmanager,
     kinesis,
     stepfunctions,
+    cloudtrail,
+    elasticache,
+    route53,
 )
 
 __all__ = [
@@ -31,4 +34,7 @@ __all__ = [
     "secretsmanager",
     "kinesis",
     "stepfunctions",
+    "cloudtrail",
+    "elasticache",
+    "route53",
 ]
